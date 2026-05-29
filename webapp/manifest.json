@@ -129,6 +129,13 @@
                 "@com.sap.vocabularies.UI.v1.LineItem": {
                   "tableSettings": {
                     "type": "ResponsiveTable"
+                  },
+                  "actions": {
+                    "PreviewPDF": {
+                      "text": "Preview PDF",
+                      "press": "gabc.vreport.vreport.ext.CustomAction.onPreviewPDF",
+                      "requiresSelection": true
+                    }
                   }
                 }
               }
