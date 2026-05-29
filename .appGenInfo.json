@@ -1,0 +1,33 @@
+{
+  "generationParameters": {
+    "generationDate": "Fri May 15 2026 16:48:10 GMT+0000 (Coordinated Universal Time)",
+    "generatorPlatform": "SAP Business Application Studio",
+    "serviceType": "SAP System (ABAP On-Premise)",
+    "metadataFilename": "",
+    "serviceUrl": "https://ds4_110.dest/sap/opu/odata4/sap/zfi_sb_vreport/srvd/sap/zfi_sd_vreport/0001/",
+    "appName": "vreport",
+    "appTitle": "Voucher Report",
+    "appDescription": "Voucher Report Fiori application ",
+    "appNamespace": "gabc.vreport",
+    "ui5Theme": "sap_horizon",
+    "ui5Version": "1.120.23",
+    "enableEslint": true,
+    "enableTypeScript": false,
+    "showMockDataInfo": true,
+    "generatorVersion": "1.24.0",
+    "template": "List Report Page V4",
+    "generatorName": "SAP Fiori Application Generator",
+    "entityRelatedConfig": [
+      {
+        "type": "Main Entity",
+        "value": "VREPORT"
+      },
+      {
+        "type": "Navigation Entity",
+        "value": "_Vhead"
+      }
+    ],
+    "launchText": "To launch the generated application, run the following from the generated application root folder:\n\n```\n    npm start\n```",
+    "valueHelpDownloaded": true
+  }
+}
