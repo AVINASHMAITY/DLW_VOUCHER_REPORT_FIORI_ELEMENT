@@ -4,6 +4,26 @@ sap.ui.define([
 ], function (MessageToast, PDFViewer) {
     "use strict";
 
+        function base64ToArrayBuffer(base64) {
+
+        base64 = base64.replace(/\s/g, "");
+        base64 = base64.replace(/-/g, "+").replace(/_/g, "/");
+
+        while (base64.length % 4 !== 0) {
+            base64 += "=";
+        }
+
+        const binary = window.atob(base64);
+        const bytes = new Uint8Array(binary.length);
+
+        for (let i = 0; i < binary.length; i++) {
+            bytes[i] = binary.charCodeAt(i);
+        }
+
+        return bytes;
+    }
+
+
     return {
 
         onPreviewPDF: async function (oBindingContext, aSelectedContexts) {
@@ -36,8 +56,10 @@ sap.ui.define([
                 }
 
                 // Convert base64 → Blob
-                var byteCharacters = atob(sBase64);
-                var byteArray = Uint8Array.from(byteCharacters, c => c.charCodeAt(0));
+                //var byteCharacters = atob(sBase64);
+
+                //var byteArray = Uint8Array.from(byteCharacters, c => c.charCodeAt(0));
+                var byteArray = base64ToArrayBuffer(sBase64);
 
                 var blob = new Blob([byteArray], { type: "application/pdf" });
 
