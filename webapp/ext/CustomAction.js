@@ -23,7 +23,6 @@ sap.ui.define([
         return bytes;
     }
 
-
     return {
 
         onPreviewPDF: async function (oBindingContext, aSelectedContexts) {
@@ -38,7 +37,6 @@ sap.ui.define([
 
             try {
 
-                // ✅ CORRECT RAP ACTION CALL (FULLY QUALIFIED)
                 var oAction = oModel.bindContext(
                     "com.sap.gateway.srvd.zfi_sd_vreport.v0001.PdfPreview(...)",
                     oContext
@@ -55,10 +53,6 @@ sap.ui.define([
                     return;
                 }
 
-                // Convert base64 → Blob
-                //var byteCharacters = atob(sBase64);
-
-                //var byteArray = Uint8Array.from(byteCharacters, c => c.charCodeAt(0));
                 var byteArray = base64ToArrayBuffer(sBase64);
 
                 var blob = new Blob([byteArray], { type: "application/pdf" });
