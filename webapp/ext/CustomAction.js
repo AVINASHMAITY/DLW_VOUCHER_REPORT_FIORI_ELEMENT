@@ -4,7 +4,7 @@ sap.ui.define([
 ], function (MessageToast, PDFViewer) {
     "use strict";
 
-        function base64ToArrayBuffer(base64) {
+    function base64ToArrayBuffer(base64) {
 
         base64 = base64.replace(/\s/g, "");
         base64 = base64.replace(/-/g, "+").replace(/_/g, "/");
@@ -27,46 +27,70 @@ sap.ui.define([
 
         onPreviewPDF: async function (oBindingContext, aSelectedContexts) {
 
-            var oContext = aSelectedContexts?.[0];
-            if (!oContext) {
-                MessageToast.show("Please select a row");
+            if (!aSelectedContexts || aSelectedContexts.length === 0) {
+                MessageToast.show("Please select at least one row");
                 return;
             }
 
-            var oModel = oContext.getModel();
+            //------Looping Through Selected Contexts for getting PDFs------
+            //==============================================================
+            const aPdfs = [];
+            for (const oContext of aSelectedContexts) {
 
-            try {
+                const oModel = oContext.getModel();
 
-                var oAction = oModel.bindContext(
+                const oAction = oModel.bindContext(
                     "com.sap.gateway.srvd.zfi_sd_vreport.v0001.PdfPreview(...)",
                     oContext
                 );
 
                 await oAction.execute();
 
-                var oResult = oAction.getBoundContext().getObject();
+                const oResult = oAction.getBoundContext().getObject();
 
-                var sBase64 = oResult.pdf_attachments;
-
-                if (!sBase64) {
-                    MessageToast.show("No PDF returned");
-                    return;
+                if (oResult?.pdf_attachments) {
+                    aPdfs.push(oResult.pdf_attachments);
                 }
-
-                var byteArray = base64ToArrayBuffer(sBase64);
-
-                var blob = new Blob([byteArray], { type: "application/pdf" });
-
-                var pdfUrl = URL.createObjectURL(blob);
-
-                new PDFViewer({
-                    source: pdfUrl
-                }).open();
-
-            } catch (e) {
-                console.error(e);
-                MessageToast.show("PdfPreview failed - check RAP action binding");
             }
+            console.log(aPdfs.length);
+            //------Looping Through Selected Contexts for getting PDFs------
+
+
+            //------Merging All PDFs----------------------------------------
+            //==============================================================
+            const mergedPdf = await PDFLib.PDFDocument.create();
+
+            for (const sBase64 of aPdfs) {
+
+                const pdfBytes = base64ToArrayBuffer(sBase64);
+
+                const pdf = await PDFLib.PDFDocument.load(pdfBytes);
+
+                const pages = await mergedPdf.copyPages(
+                    pdf,
+                    pdf.getPageIndices()
+                );
+
+                pages.forEach(page => mergedPdf.addPage(page));
+            }
+
+            const mergedBytes = await mergedPdf.save();
+            //------Merging All PDFs----------------------------------------
+
+
+
+            //------Showing Merged PDF in SAPUI5 PDFViewer control----------
+            //==============================================================
+            const blob = new Blob(
+                [mergedBytes],
+                { type: "application/pdf" }
+            );
+
+            const pdfUrl = URL.createObjectURL(blob);
+
+            new PDFViewer({
+                source: pdfUrl
+            }).open();
         }
     };
 });
