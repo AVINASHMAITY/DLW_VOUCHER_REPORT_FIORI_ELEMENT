@@ -32,57 +32,35 @@ sap.ui.define([
                 return;
             }
 
-            //------Looping Through Selected Contexts for getting PDFs------
-            //==============================================================
-            const aPdfs = [];
-            for (const oContext of aSelectedContexts) {
+            const oContext = aSelectedContexts[0];
+            const oModel = oContext.getModel();
 
-                const oModel = oContext.getModel();
+            const oAction = oModel.bindContext(
+                "com.sap.gateway.srvd.zfi_sd_vreport.v0001.PdfPreview(...)",
+                oContext
+            );
 
-                const oAction = oModel.bindContext(
-                    "com.sap.gateway.srvd.zfi_sd_vreport.v0001.PdfPreview(...)",
-                    oContext
-                );
+            const aParameters = aSelectedContexts.map(function (oCtx) {
 
-                await oAction.execute();
+                const oData = oCtx.getObject();
 
-                const oResult = oAction.getBoundContext().getObject();
+                return {
+                    // DummyKey: "1",
+                    PaymentRunID: oData.PaymentRunID,
+                    PaymentRunDate: oData.PaymentRunDate
+                };
+            });
 
-                if (oResult?.pdf_attachments) {
-                    aPdfs.push(oResult.pdf_attachments);
-                }
-            }
-            console.log(aPdfs.length);
-            //------Looping Through Selected Contexts for getting PDFs------
+            oAction.setParameter("_Parameters", aParameters);
 
+            await oAction.execute();
 
-            //------Merging All PDFs----------------------------------------
-            //==============================================================
-            const mergedPdf = await PDFLib.PDFDocument.create();
+            const oResult = oAction.getBoundContext().getObject();
 
-            for (const sBase64 of aPdfs) {
+            var byteArray = base64ToArrayBuffer(oResult.pdf_attachments);
 
-                const pdfBytes = base64ToArrayBuffer(sBase64);
-
-                const pdf = await PDFLib.PDFDocument.load(pdfBytes);
-
-                const pages = await mergedPdf.copyPages(
-                    pdf,
-                    pdf.getPageIndices()
-                );
-
-                pages.forEach(page => mergedPdf.addPage(page));
-            }
-
-            const mergedBytes = await mergedPdf.save();
-            //------Merging All PDFs----------------------------------------
-
-
-
-            //------Showing Merged PDF in SAPUI5 PDFViewer control----------
-            //==============================================================
             const blob = new Blob(
-                [mergedBytes],
+                [byteArray],
                 { type: "application/pdf" }
             );
 
