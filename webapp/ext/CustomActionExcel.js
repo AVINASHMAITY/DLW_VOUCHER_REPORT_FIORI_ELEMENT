@@ -31,11 +31,6 @@ sap.ui.define([
                 return;
             }
 
-            if (aSelectedContexts.length > 1) {
-                MessageToast.show("Please select only one row");
-                return;
-            }
-
             const oContext = aSelectedContexts[0];
             const oModel = oContext.getModel();
 
@@ -43,6 +38,19 @@ sap.ui.define([
                 "com.sap.gateway.srvd.zfi_sd_vreport.v0001.ExcelPreview(...)",
                 oContext
             );
+
+            const aParameters = aSelectedContexts.map(function (oCtx) {
+
+                const oData = oCtx.getObject();
+
+                return {
+                    // DummyKey: "1",
+                    PaymentRunID: oData.PaymentRunID,
+                    PaymentRunDate: oData.PaymentRunDate
+                };
+            });
+
+            oAction.setParameter("_Parameters", aParameters);
 
             await oAction.execute();
 
