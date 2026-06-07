@@ -170,6 +170,20 @@
             "settings": {
               "editableHeaderContent": false,
               "contextPath": "/VREPORT",
+              "content": {
+                "header": {
+                  "actions": {
+                    "PreviewPDF": {
+                      "text": "Preview PDF",
+                      "press": "gabc.vreport.vreport.ext.CustomAction.onPreviewPDF"
+                    },
+                    "PreviewExcel": {
+                      "text": "Preview Excel",
+                      "press": "gabc.vreport.vreport.ext.CustomActionExcel.onPreviewExcel"
+                    }
+                  }
+                }
+              },
               "navigation": {
                 "_Vhead": {
                   "detail": {

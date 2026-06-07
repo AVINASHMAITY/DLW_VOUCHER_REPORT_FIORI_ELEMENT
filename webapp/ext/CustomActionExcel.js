@@ -26,12 +26,17 @@ sap.ui.define([
 
         onPreviewExcel: async function (oBindingContext, aSelectedContexts) {
 
-            if (!aSelectedContexts || aSelectedContexts.length === 0) {
-                MessageToast.show("Please select at least one row");
-                return;
-            }
+            // if (!aSelectedContexts || aSelectedContexts.length === 0) {
+            //     MessageToast.show("Please select at least one row");
+            //     return;
+            // }
 
-            const oContext = aSelectedContexts[0];
+            const aContexts = aSelectedContexts?.length
+                ? aSelectedContexts
+                : [oBindingContext];
+
+            //const oContext = aSelectedContexts[0];
+            const oContext = aContexts[0];
             const oModel = oContext.getModel();
 
             const oAction = oModel.bindContext(
@@ -39,7 +44,8 @@ sap.ui.define([
                 oContext
             );
 
-            const aParameters = aSelectedContexts.map(function (oCtx) {
+            //const aParameters = aSelectedContexts.map(function (oCtx) {
+            const aParameters = aContexts.map(function (oCtx) {
 
                 const oData = oCtx.getObject();
 
