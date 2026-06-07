@@ -152,7 +152,8 @@
                     "Test": {
                       "text": "Test",
                       "press": "gabc.vreport.vreport.ext.CustomActionTest.onTest",
-                      "requiresSelection": true
+                      "requiresSelection": true,
+                      "visible": false
                     }
                   }
                 }
